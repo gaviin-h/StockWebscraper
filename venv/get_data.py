@@ -1,6 +1,7 @@
 
 import requests
-import bs4 as bs
+from bs4 import *
+import lxml
 
 # driver = webdriver.Chrome("Users/Gavin/Applications/Google\ Chrome.app")
 
@@ -18,10 +19,16 @@ def get_tick(file):
 def get_data(arr):  # Go through the list of tickers and get data
     for j in range(0, len(arr)):
         tick = arr[j]
+        result = open("data", "w")
+
         url = "https://finance.yahoo.com/quote/" + tick + "?p=&.tsrc=fin-srch"
         data = requests.get(url).text
-        soup = bs(data.text, 'html.parser')
-        mydivs = soup.findAll('span', {"class": "Trsdu(0.3s) Fw(b) Fz(36px) Mb(-4px) D(ib)"})
+        soup = BeautifulSoup(data, 'lxml')
+
+        price_box = soup.find('span', {'class': 'Trsdu(0.3s) Trsdu(0.3s) Fw(b) Fz(36px) Mb(-4px) D(b)'})
+        price = price_box.text
+
+        result.write(tick + " " + price)
 
         # open the html || should use helper methods
 
