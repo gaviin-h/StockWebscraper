@@ -2,19 +2,21 @@
 import requests
 import bs4 as bs
 
-# get the tickers names
-file = open("Tickers.txt", "r")
-x = []
 # driver = webdriver.Chrome("Users/Gavin/Applications/Google\ Chrome.app")
 
 # Put all the tickers into a list
-for i in file:
-    i = i.replace("\n", "")
-    x.append(i)
+
+
+def get_tick(file):
+    for i in file:
+        i = i.replace("\n", "")
+        x = []
+        x.append(i)
+        return x
 
 
 def get_data(arr):  # Go through the list of tickers and get data
-    for j in range(0, len(x)):
+    for j in range(0, len(arr)):
         tick = arr[j]
         url = "https://finance.yahoo.com/quote/" + tick + "?p=&.tsrc=fin-srch"
         data = requests.get(url).text

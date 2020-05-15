@@ -1,7 +1,14 @@
 # lets get some stock info!
 
-from get_data.py import get_data()
+from get_data import *
+
+
+file = open("Tickers.txt", "r")
+
 
 # run an algorithm to find the hottest stock
+
+get_data(get_tick(file))
+
 
 # store the info to the text file
