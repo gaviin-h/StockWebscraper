@@ -13,9 +13,6 @@ for i in file:
     i = i.replace("\n", "")
     x.append(i)
 
-get_data(x)
-
-
 def get_data(arr):  # Go through the list of tickers and get data
     for j in range(0, len(x)):
         tick = arr[j]
@@ -25,6 +22,8 @@ def get_data(arr):  # Go through the list of tickers and get data
         mydivs = soup.findAll('span', {"class": "Trsdu(0.3s) Fw(b) Fz(36px) Mb(-4px) D(ib)"})
         print(mydivs)
 
+
+get_data(x)
 
 # open the html
 
