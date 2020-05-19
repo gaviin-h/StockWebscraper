@@ -2,12 +2,16 @@
 import requests
 from bs4 import *
 import time
+import csv
 import lxml
 
 # driver = webdriver.Chrome("Users/Gavin/Applications/Google\ Chrome.app")
 
 # Put all the tickers into a list
-result = open("data", "w")
+# result = open("data", "w")
+data = open('data.csv', 'w', newline='')
+# result = open('data.txt', 'w')
+writer = csv.writer(data)
 
 
 def get_tick(file):
@@ -19,26 +23,37 @@ def get_tick(file):
 
 
 def get_data(arr):  # Go through the list of tickers and get data, rests for 5 seconds after
+
+    writer.writerow(["TICK", "Price", "Change", "Percent"])
+
     for j in range(0, len(arr)):
         tick = arr[j]
-        url = "https://finance.yahoo.com/quote/" + tick + "?p=&.tsrc=fin-srch"
-        data = requests.get(url).text
-        soup = BeautifulSoup(data, 'lxml')
+        url = "https://finance.yahoo.com/quote/" + tick + "/history?p=" + tick
+        html = requests.get(url).text
+        soup = BeautifulSoup(html, 'lxml')
+        try:
+            morning_open = soup.find('span', {'data-reactid': '53'}).text
+            prev_close = soup.find('span', {'data-reactid': '74'}).text
+            prev_open = soup.find('span', {'data-reactid': '68'}).text
+            prev_volume = soup.find('span', {'data-reactid': '78'}).text
+            close = soup.find('span', {'data-reactid': '59'}).text
 
-        price_box = soup.find('span', {'class': 'Trsdu(0.3s) Trsdu(0.3s) Fw(b) Fz(36px) Mb(-4px) D(b)'})
-        price = price_box.text
-        price_change = soup.find('span', {'data-reactid': '16'})
-        change = price_change.text
+            morning_open = morning_open.replace(',', '')
+            prev_close = prev_close.replace(',', '')
+            prev_open = prev_open.replace(',', '')
+            prev_volume = prev_volume.replace(',', '')
+            close = close.replace(',', '')
 
-        result.write(tick + ' ' + price + ' ' + change + '\n')
+            percent_change = ((float(close) - float(morning_open)) / float(morning_open)) * 100
 
-        """ DONT TOUCH THIS I NEED IT TO HELP PARSE THE HTML"""
-        """price_box = soup.find_all('span')
-        for x in price_box:
-            result.writelines(str(x) + "\n")"""
+            writer.writerow([tick, percent_change, prev_open, prev_close, prev_volume, morning_open])
+
+            """ DONT TOUCH THIS I NEED IT TO HELP PARSE THE HTML"""
+            """price_box = soup.find_all('td', {'class': 'Py(10px) Pstart(10px)'})
+            for x in price_box:
+                result.writelines(str(x) + "\n")"""
+
+        except AttributeError:
+            writer.writerow([tick, 0, 0, 0, 0, 0])
 
         time.sleep(5)
-
-        # open the html || should use helper methods
-
-        # analyse the html and push the data to a new txt file called data.txt
