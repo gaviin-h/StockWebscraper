@@ -8,7 +8,6 @@ import lxml
 # driver = webdriver.Chrome("Users/Gavin/Applications/Google\ Chrome.app")
 
 # Put all the tickers into a list
-# result = open("data", "w")
 data = open('data.csv', 'w', newline='')
 # result = open('data.txt', 'w')
 writer = csv.writer(data)
@@ -24,7 +23,7 @@ def get_tick(file):
 
 def get_data(arr):  # Go through the list of tickers and get data, rests for 5 seconds after
 
-    writer.writerow(["TICK", "Price", "Change", "Percent"])
+    # writer.writerow(["TICK", "%Change", "Prev Open", "Prev Close", "Prev Volume", "Open"]) OPTIONAL LABELS
 
     for j in range(0, len(arr)):
         tick = arr[j]
@@ -48,10 +47,12 @@ def get_data(arr):  # Go through the list of tickers and get data, rests for 5 s
 
             writer.writerow([tick, percent_change, prev_open, prev_close, prev_volume, morning_open])
 
-            """ DONT TOUCH THIS I NEED IT TO HELP PARSE THE HTML"""
-            """price_box = soup.find_all('td', {'class': 'Py(10px) Pstart(10px)'})
+            """ DON'T TOUCH THIS I NEED IT TO HELP PARSE THE HTML"""
+            """
+            price_box = soup.find_all('td', {'class': 'Py(10px) Pstart(10px)'})
             for x in price_box:
-                result.writelines(str(x) + "\n")"""
+                result.writelines(str(x) + "\n")
+            """
 
         except AttributeError:
             writer.writerow([tick, 0, 0, 0, 0, 0])

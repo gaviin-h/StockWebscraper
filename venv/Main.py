@@ -5,7 +5,6 @@ from get_data import *
 
 file = open("Tickers.txt", "r")
 
-
 # run an algorithm to find the hottest stock
 
 get_data(get_tick(file))
