@@ -7,11 +7,8 @@ import lxml
 
 # driver = webdriver.Chrome("Users/Gavin/Applications/Google\ Chrome.app")
 
-# Put all the tickers into a list
-data = open('data.csv', 'w', newline='')
-# result = open('data.txt', 'w')
-writer = csv.writer(data)
 
+# result = open('data.txt', 'w')
 
 def get_tick(file):
     x = []
@@ -22,7 +19,8 @@ def get_tick(file):
 
 
 def get_data(arr):  # Go through the list of tickers and get data, rests for 5 seconds after
-
+    data = open('data.csv', 'a+', newline='')
+    writer = csv.writer(data)
     # writer.writerow(["TICK", "%Change", "Prev Open", "Prev Close", "Prev Volume", "Open"]) OPTIONAL LABELS
 
     for j in range(0, len(arr)):
@@ -30,6 +28,7 @@ def get_data(arr):  # Go through the list of tickers and get data, rests for 5 s
         url = "https://finance.yahoo.com/quote/" + tick + "/history?p=" + tick
         html = requests.get(url).text
         soup = BeautifulSoup(html, 'lxml')
+
         try:
             morning_open = soup.find('span', {'data-reactid': '53'}).text
             prev_close = soup.find('span', {'data-reactid': '74'}).text
@@ -45,7 +44,7 @@ def get_data(arr):  # Go through the list of tickers and get data, rests for 5 s
 
             percent_change = ((float(close) - float(morning_open)) / float(morning_open)) * 100
 
-            writer.writerow([tick, percent_change, prev_open, prev_close, prev_volume, morning_open])
+            writer.writerow([tick, percent_change, prev_open, prev_close, morning_open, prev_volume])
 
             """ DON'T TOUCH THIS I NEED IT TO HELP PARSE THE HTML"""
             """
@@ -55,6 +54,7 @@ def get_data(arr):  # Go through the list of tickers and get data, rests for 5 s
             """
 
         except AttributeError:
-            writer.writerow([tick, 0, 0, 0, 0, 0])
+            pass
 
         time.sleep(5)
+    data.close()
